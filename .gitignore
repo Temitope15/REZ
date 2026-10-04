@@ -43,3 +43,8 @@ next-env.d.ts
 # local media
 *.mp4
 *.mov
+
+# local AI tooling (kept on disk, not in the repo)
+.claude/
+AGENTS.md
+CLAUDE.md
