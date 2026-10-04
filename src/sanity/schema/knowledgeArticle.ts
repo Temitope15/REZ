@@ -25,6 +25,7 @@ export const knowledgeArticle = defineType({
     defineField({name: 'confidence', type: 'number', description: '0 to 1, how sure the extractor was.'}),
     defineField({name: 'needsReview', type: 'boolean', initialValue: false}),
     defineField({name: 'conflictNote', type: 'text', rows: 3, description: 'Set when two pages disagreed.'}),
+    defineField({name: 'editedByOwner', type: 'boolean', readOnly: true, description: 'Set when the owner edits or writes this answer. Re-reading the website never removes it.'}),
     defineField({name: 'enabled', type: 'boolean', initialValue: true, description: 'Disable to hide from the agent without deleting.'}),
   ],
   preview: {select: {title: 'title', subtitle: 'kind'}},

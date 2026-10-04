@@ -48,3 +48,6 @@ next-env.d.ts
 .claude/
 AGENTS.md
 CLAUDE.md
+
+# DEV post draft (kept local)
+DEV_POST.md

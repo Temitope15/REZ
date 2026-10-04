@@ -22,6 +22,7 @@ export async function updateArticle(formData: FormData) {
       keywords,
       enabled: formData.get('enabled') === 'on',
       needsReview: false,
+      editedByOwner: true,
       conflictNote: formData.get('clearConflict') === 'on' ? '' : undefined,
     })
     .commit()
@@ -44,6 +45,7 @@ export async function createArticle(formData: FormData) {
     sourceUrls: [],
     confidence: 1,
     needsReview: false,
+    editedByOwner: true,
     enabled: true,
   })
   revalidatePath(`/dashboard/${slug}`)
@@ -92,9 +94,40 @@ export async function updateBusiness(formData: FormData) {
       widget: {
         botName: String(formData.get('botName') || 'Rez'),
         greeting: String(formData.get('greeting') || ''),
-        accentColor: String(formData.get('accentColor') || '#2563eb'),
+        accentColor: String(formData.get('accentColor') || '#0b0b0c'),
       },
     })
     .commit()
+
+  // Website address changed (new domain or a typo fixed): forget what was learned from the old site and read the new one.
+  const raw = String(formData.get('websiteUrl') || '').trim()
+  if (raw) {
+    let next: URL | null = null
+    try {
+      next = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`)
+    } catch {
+      next = null
+    }
+    const current = await sanityWrite.fetch<string | null>(`*[_type == "business" && _id == $id][0].websiteUrl`, {id: businessId})
+    if (next && next.toString().replace(/\/$/, '') !== (current || '').replace(/\/$/, '')) {
+      const host = next.hostname
+      const stale = await sanityWrite.fetch<string[]>(
+        `*[(_type == "sourcePage" && business._ref == $id) || (_type == "knowledgeArticle" && business._ref == $id && editedByOwner != true && count(sourceUrls) > 0)]._id`,
+        {id: businessId},
+      )
+      const tx = sanityWrite.transaction()
+      stale.forEach((docId) => tx.delete(docId))
+      tx.patch(businessId, (p) =>
+        p.set({
+          websiteUrl: next!.toString().replace(/\/$/, ''),
+          allowedDomains: [...new Set([host, host.replace(/^www\./, '')])],
+          status: 'pending',
+          statusMessage: 'Reading your new website',
+        }),
+      )
+      await tx.commit()
+      await dispatchJob('ingest', businessId).catch((err) => console.error('ingest dispatch failed', err))
+    }
+  }
   revalidatePath(`/dashboard/${slug}`)
 }

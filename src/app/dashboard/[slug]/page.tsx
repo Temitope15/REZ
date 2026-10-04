@@ -98,10 +98,20 @@ export default async function BusinessPage({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <ButtonLink href={`/demo.html?key=${business.publicKey}`} target="_blank" variant="accent">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-            Test the agent
-          </ButtonLink>
+          {busy ? (
+            <span
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-line-strong bg-surface-2 px-4 py-2 text-sm font-medium text-muted"
+              title="You can test the agent once REZ has finished reading the website"
+            >
+              <span className="h-2 w-2 rounded-full bg-warn pulse-dot" />
+              Test the agent · still working
+            </span>
+          ) : (
+            <ButtonLink href={`/demo/${business.publicKey}`} target="_blank" variant="accent">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+              Test the agent
+            </ButtonLink>
+          )}
         </div>
       </div>
 
@@ -461,7 +471,7 @@ function Install({business, appUrl}: {business: BusinessDoc; appUrl: string}) {
         <code className="mt-1 block break-all font-mono text-xs text-muted">{business.publicKey}</code>
         <div className="mt-4 text-sm font-medium">Allowed domains</div>
         <div className="mt-1 flex flex-wrap gap-1.5">{(business.allowedDomains || []).map((d) => <Badge key={d}>{d}</Badge>)}</div>
-        <a href={`/demo.html?key=${business.publicKey}`} target="_blank" className="mt-5 inline-block text-sm text-accent underline">Preview on a demo page ↗</a>
+        <a href={`/demo/${business.publicKey}`} target="_blank" className="mt-5 inline-block text-sm text-accent underline">Preview on a demo page ↗</a>
       </Card>
     </div>
   )
@@ -477,6 +487,7 @@ function Settings({business, slug, busy}: {business: BusinessDoc; slug: string; 
         <form action={updateBusiness} className="grid gap-4 p-5">
           <input type="hidden" name="businessId" value={business._id} />
           <input type="hidden" name="slug" value={slug} />
+          <label className="label">Website<span className="hint">Changed your domain or spotted a typo? Update it and REZ reads the new site. Answers you wrote yourself are kept.</span><input name="websiteUrl" defaultValue={business.websiteUrl} className="field" inputMode="url" /></label>
           <label className="label">Escalation email<span className="hint">Tickets REZ can’t resolve are emailed here.</span><input name="escalationEmail" type="email" defaultValue={business.escalationEmail} className="field" /></label>
           <label className="label">About the business<textarea name="description" rows={3} defaultValue={business.description} className="field" /></label>
           <label className="label">Tone<input name="tone" defaultValue={business.tone} className="field" placeholder="Warm, concise, a little playful" /></label>

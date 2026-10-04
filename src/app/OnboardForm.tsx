@@ -1,12 +1,17 @@
 'use client'
 
 import {useRouter} from 'next/navigation'
-import {useState} from 'react'
+import {useCallback, useState} from 'react'
+import {InstallModal} from './InstallModal'
 
 export function OnboardForm() {
   const router = useRouter()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [created, setCreated] = useState<{name: string; slug: string; publicKey: string} | null>(null)
+  const goToDashboard = useCallback(() => {
+    if (created) router.push(`/dashboard/${created.slug}`)
+  }, [created, router])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -24,7 +29,8 @@ export function OnboardForm() {
       const r = await fetch('/api/businesses', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(payload)})
       const j = await r.json()
       if (!r.ok && !j.slug) throw new Error(j.error || 'Something went wrong. Please try again.')
-      router.push(`/dashboard/${j.slug}`)
+      if (j.publicKey) setCreated({name: payload.name, slug: j.slug, publicKey: j.publicKey})
+      else router.push(`/dashboard/${j.slug}`)
     } catch (err) {
       setError((err as Error).message)
       setBusy(false)
@@ -32,6 +38,8 @@ export function OnboardForm() {
   }
 
   return (
+    <>
+    {created && <InstallModal name={created.name} publicKey={created.publicKey} onDone={goToDashboard} />}
     <form onSubmit={onSubmit} className="rounded-3xl border border-line-strong bg-surface p-7 shadow-[0_40px_80px_-40px_rgba(11,11,12,0.35)] sm:p-8">
       <div className="font-display text-[24px]" style={{letterSpacing: '-0.03em'}}>Set up REZ</div>
       <p className="mt-1 text-[14px] text-muted">Three questions. That’s all.</p>
@@ -59,5 +67,6 @@ export function OnboardForm() {
         <p className="text-center text-[12px] text-faint">REZ starts reading your site right away. You can watch it happen.</p>
       </div>
     </form>
+    </>
   )
 }

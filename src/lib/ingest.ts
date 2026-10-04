@@ -1,7 +1,7 @@
 import {createHash, randomBytes} from 'node:crypto'
 import {sanityWrite, setBusinessStatus, type BusinessDoc} from './sanity'
 import {crawlSite, type CrawledPage} from './crawler'
-import {batchPages, extractBatch, mergeArticles, mergeProfiles, type ExtractedArticle, type ExtractedProfile} from './extract'
+import {batchPages, describeBusiness, extractBatch, mergeArticles, mergeProfiles, type ExtractedArticle, type ExtractedProfile} from './extract'
 import {ensureKnowledgeBase, buildKnowledgeBase, isKbLimitError} from './kb'
 
 const short = (s: string) => createHash('sha256').update(s).digest('hex').slice(0, 12)
@@ -153,6 +153,14 @@ export async function ingestBusiness(businessId: string, opts: IngestOptions = {
     const merged = mergeArticles(all)
     const profile = mergeProfiles(results.map((r) => r.profile))
     const created = await writeArticles(business, merged)
+    // Fill "About the business" even when no page states it outright. Owner edits are never overwritten.
+    if (!profile.description && !business.description) {
+      const d = await describeBusiness(business.name, pages)
+      if (d) {
+        profile.description = d.description
+        if (!profile.tone && d.tone) profile.tone = d.tone
+      }
+    }
     await applyProfile(business, profile)
     log(`wrote ${created} new articles (${merged.length} after merge, ${all.length} raw)`)
 
