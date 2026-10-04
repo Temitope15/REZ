@@ -40,7 +40,7 @@ export default async function TicketPage({params}: {params: Promise<{slug: strin
   const lines = (t.transcript || '').split(/\n\n+/).filter(Boolean)
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-16 pt-8 sm:px-6">
+    <main className="fade-in mx-auto max-w-5xl px-4 pb-16 pt-8 sm:px-6">
       <Link href={`/dashboard/${slug}?tab=tickets`} className="text-sm text-muted hover:text-ink">← Tickets</Link>
       <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -55,7 +55,7 @@ export default async function TicketPage({params}: {params: Promise<{slug: strin
           <form action={resolveTicket}>
             <input type="hidden" name="id" value={t._id} />
             <input type="hidden" name="slug" value={slug} />
-            <SubmitButton variant="primary" pendingLabel="Resolving…">Mark resolved</SubmitButton>
+            <SubmitButton variant="primary" pendingLabel="Resolving…" doneLabel="Resolved">Mark resolved</SubmitButton>
           </form>
         )}
       </div>

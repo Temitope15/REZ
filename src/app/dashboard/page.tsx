@@ -43,9 +43,9 @@ export default async function DashboardHome() {
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {rows.map((r) => (
-            <Link key={r._id} href={`/dashboard/${r.slug.current}`} className="group">
-              <Card className="h-full p-5 transition group-hover:border-line-strong group-hover:shadow-[0_6px_24px_-12px_rgba(23,22,27,0.18)]">
+          {rows.map((r, i) => (
+            <Link key={r._id} href={`/dashboard/${r.slug.current}`} className="fade-in group" style={{animationDelay: `${i * 60}ms`}}>
+              <Card className="lift h-full p-5 group-hover:border-line-strong">
                 <div className="flex items-start justify-between gap-3">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-[15px] font-semibold text-accent">
                     {r.name.slice(0, 1).toUpperCase()}

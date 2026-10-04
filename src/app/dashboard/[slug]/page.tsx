@@ -110,7 +110,7 @@ export default async function BusinessPage({
             key={t.id}
             href={t.id === 'overview' ? base : `${base}?tab=${t.id}`}
             className={cx(
-              'flex items-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-1.5 text-sm font-medium transition',
+              'press flex items-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-1.5 text-sm font-medium transition-all duration-200',
               tab === t.id ? 'bg-ink text-white' : 'text-muted hover:bg-surface-2 hover:text-ink',
             )}
           >
@@ -124,7 +124,7 @@ export default async function BusinessPage({
         ))}
       </nav>
 
-      <div className="mt-6 min-w-0">
+      <div key={tab} className="fade-in mt-6 min-w-0">
         {tab === 'overview' && (
           <Overview business={business} busy={busy} articles={articles} review={review} openTickets={openTickets} pageCount={pageCount} base={base} />
         )}
@@ -210,10 +210,11 @@ function Overview({business, busy, articles, review, openTickets, pageCount, bas
       )}
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 [&>*]:min-w-0">
-        <Stat label="Answers in knowledge base" value={articles.filter((a) => a.enabled !== false).length} hint={`from ${pageCount} pages`} />
-        <Stat label="Need your review" value={review} tone={review ? 'warn' : undefined} hint={review ? 'Pages disagreed' : 'Nothing flagged'} />
-        <Stat label="Open tickets" value={openTickets.length} tone={openTickets.length ? 'warn' : undefined} hint="Escalated to your team" />
+        <Stat delay={0} label="Answers in knowledge base" value={articles.filter((a) => a.enabled !== false).length} hint={`from ${pageCount} pages`} />
+        <Stat delay={70} label="Need your review" value={review} tone={review ? 'warn' : undefined} hint={review ? 'Pages disagreed' : 'Nothing flagged'} />
+        <Stat delay={140} label="Open tickets" value={openTickets.length} tone={openTickets.length ? 'warn' : undefined} hint="Escalated to your team" />
         <Stat
+          delay={210}
           label="Retrieval"
           value={<span className="text-[17px]">{business.knowledgeBaseId ? 'Knowledge Base' : 'Dataset search'}</span>}
           hint={business.knowledgeBaseId ? <code className="font-mono">{business.knowledgeBaseId}</code> : 'Sanity GROQ, per-business filter'}
@@ -254,7 +255,7 @@ function Overview({business, busy, articles, review, openTickets, pageCount, bas
               </div>
               <input type="hidden" name="businessId" value={business._id} />
               <input type="hidden" name="slug" value={business.slug.current} />
-              <SubmitButton size="sm" disabled={busy} pendingLabel="Pushing…">Push</SubmitButton>
+              <SubmitButton size="sm" disabled={busy} pendingLabel="Pushing…" doneLabel="Sent">Push</SubmitButton>
             </form>
             <form action={reingest} className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3">
               <div>
@@ -275,7 +276,7 @@ function Overview({business, busy, articles, review, openTickets, pageCount, bas
 function TicketItem({t, base}: {t: TicketRow; base: string}) {
   return (
     <li>
-      <Link href={`${base}/tickets/${t._id}`} className="flex items-start justify-between gap-4 px-5 py-3.5 hover:bg-surface-2">
+      <Link href={`${base}/tickets/${t._id}`} className="group flex items-start justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-surface-2">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className={cx('h-2 w-2 shrink-0 rounded-full', t.status === 'open' ? 'bg-warn' : 'bg-ok')} />
@@ -349,7 +350,7 @@ function Knowledge({business, slug, articles, sp, base, busy}: {
           <ul className="divide-y divide-line">
             {filtered.map((a) => (
               <li key={a._id}>
-                <Link href={`${base}/articles/${a._id}`} className="block px-4 py-3.5 hover:bg-surface-2">
+                <Link href={`${base}/articles/${a._id}`} className="group block px-4 py-3.5 transition-all duration-200 hover:bg-surface-2 hover:pl-5">
                   <div className="flex items-center gap-2">
                     <KindTag kind={a.kind} />
                     <span className={cx('truncate text-sm font-medium', a.enabled === false && 'text-faint line-through')}>{a.title}</span>
@@ -378,7 +379,7 @@ function Knowledge({business, slug, articles, sp, base, busy}: {
             <label className="label">Customer question<input name="question" className="field" placeholder="When do I need to order by?" /></label>
             <label className="label">Short answer<input name="summary" className="field" /></label>
             <label className="label">Full answer<textarea name="body" rows={4} className="field" placeholder="Markdown is fine" /></label>
-            <SubmitButton variant="primary" pendingLabel="Adding…">Add answer</SubmitButton>
+            <SubmitButton variant="primary" pendingLabel="Adding…" doneLabel="Added">Add answer</SubmitButton>
           </form>
         </Card>
         <p className="px-1 text-xs text-muted">
@@ -394,7 +395,7 @@ function Chip({href, active, tone, children}: {href: string; active?: boolean; t
     <Link
       href={href}
       className={cx(
-        'whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition',
+        'press whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset transition',
         active ? (tone === 'warn' ? 'bg-warn text-white ring-warn' : 'bg-ink text-white ring-ink') : 'bg-surface text-ink-2 ring-line hover:ring-line-strong',
       )}
     >
@@ -476,7 +477,7 @@ function Settings({business, slug, busy}: {business: BusinessDoc; slug: string; 
             </label>
           </div>
           <label className="label">Greeting<input name="greeting" defaultValue={business.widget?.greeting} className="field" /></label>
-          <div><SubmitButton variant="primary" pendingLabel="Saving…">Save changes</SubmitButton></div>
+          <div><SubmitButton variant="primary" pendingLabel="Saving…" doneLabel="Saved">Save changes</SubmitButton></div>
         </form>
       </Card>
       <div className="grid content-start gap-6">

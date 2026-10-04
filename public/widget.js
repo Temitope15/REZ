@@ -21,9 +21,10 @@
   var style = document.createElement('style');
   style.textContent =
     '.rez-btn{position:fixed;right:20px;bottom:20px;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:2147483000;display:flex;align-items:center;justify-content:center;transition:transform .15s}' +
-    '.rez-btn:hover{transform:scale(1.05)}' +
-    '.rez-frame{position:fixed;right:20px;bottom:88px;width:380px;height:min(600px,calc(100vh - 110px));border:0;border-radius:16px;box-shadow:0 16px 48px rgba(0,0,0,.25);z-index:2147483000;background:#fff;display:none}' +
-    '.rez-frame.open{display:block}' +
+    '.rez-btn:hover{transform:scale(1.06)}.rez-btn:active{transform:scale(.94)}.rez-btn svg{transition:transform .3s cubic-bezier(.2,.8,.2,1)}.rez-btn.open svg{transform:rotate(90deg)}' +
+    '.rez-frame{position:fixed;right:20px;bottom:88px;width:380px;height:min(600px,calc(100vh - 110px));border:0;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.25);z-index:2147483000;background:#fff;opacity:0;transform:translateY(12px) scale(.96);transform-origin:bottom right;pointer-events:none;visibility:hidden;transition:opacity .25s ease,transform .35s cubic-bezier(.2,.8,.2,1),visibility 0s linear .35s}' +
+    '.rez-frame.open{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .25s ease,transform .35s cubic-bezier(.2,.8,.2,1),visibility 0s}' +
+    '@media (prefers-reduced-motion:reduce){.rez-frame,.rez-btn,.rez-btn svg{transition:none}}' +
     '@media (max-width:480px){.rez-frame{right:0;bottom:0;width:100vw;height:100vh;border-radius:0}}';
   document.head.appendChild(style);
 
@@ -46,6 +47,7 @@
     open = typeof force === 'boolean' ? force : !open;
     frame.classList.toggle('open', open);
     btn.innerHTML = open ? closeIcon : chatIcon;
+    btn.classList.toggle('open', open);
   }
   btn.addEventListener('click', function () { toggle(); });
   window.addEventListener('message', function (e) {

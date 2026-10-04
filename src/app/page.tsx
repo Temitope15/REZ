@@ -3,7 +3,9 @@ import {OnboardForm} from './OnboardForm'
 import {Logo} from './ui'
 import {Reveal} from './landing/Reveal'
 import {HeroDemo} from './landing/HeroDemo'
-import {ArtInstall, ArtLearn, ArtLink, SanityFlow} from './landing/Art'
+import {SanityFlow} from './landing/Art'
+import {Steps} from './landing/Steps'
+import {FloatingQuestions, HeroBackground} from './landing/HeroBackground'
 
 const QUESTIONS = [
   'Where’s my order?',
@@ -36,7 +38,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <a href="#how" className="hidden rounded-lg px-3 py-2 text-[14px] text-ink-2 hover:text-ink md:block">How it works</a>
             <Link href="/dashboard" className="hidden rounded-lg px-3 py-2 text-[14px] text-ink-2 hover:text-ink sm:block">Dashboard</Link>
-            <a href="#start" className="group inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-[14px] font-medium text-white">
+            <a href="#start" className="press group inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-[14px] font-medium text-white">
               Get started <Arrow />
             </a>
           </div>
@@ -44,8 +46,10 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="bg-hatch relative border-b border-line">
-        <div className="mx-auto max-w-6xl px-5 pb-24 pt-16 text-center sm:pt-24">
+      <section className="relative isolate overflow-hidden border-b border-line">
+        <HeroBackground />
+        <FloatingQuestions />
+        <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-16 text-center sm:pt-24">
           <h1 className="font-display rise mx-auto max-w-5xl text-balance text-[44px] leading-[0.98] sm:text-[60px] lg:text-[72px]" style={{animationDelay: '80ms'}}>
             Never answer the same
             <br className="hidden sm:block" /> question twice.
@@ -54,10 +58,10 @@ export default function Home() {
             Share your website link. REZ learns your business and answers your customers for you, day and night. Anything it can’t handle comes straight to you.
           </p>
           <div className="rise mt-9 flex flex-wrap items-center justify-center gap-3" style={{animationDelay: '240ms'}}>
-            <a href="#start" className="group inline-flex items-center gap-2 rounded-xl bg-ink px-6 py-3.5 text-[15px] font-medium text-white shadow-[0_10px_30px_-12px_rgba(11,11,12,0.6)]">
+            <a href="#start" className="press group inline-flex items-center gap-2 rounded-xl bg-ink px-6 py-3.5 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-14px_rgba(11,11,12,0.7)] text-[15px] font-medium text-white shadow-[0_10px_30px_-12px_rgba(11,11,12,0.6)]">
               Start with your website <Arrow />
             </a>
-            <a href="#how" className="rounded-xl border border-line-strong bg-surface px-6 py-3.5 text-[15px] font-medium text-ink hover:border-ink">
+            <a href="#how" className="press rounded-xl border border-line-strong bg-surface px-6 py-3.5 text-[15px] font-medium text-ink hover:-translate-y-0.5 hover:border-ink">
               See how it works
             </a>
           </div>
@@ -73,9 +77,9 @@ export default function Home() {
       <section className="border-b border-line bg-surface py-8">
         <p className="mb-5 text-center text-[12px] font-medium uppercase tracking-[0.14em] text-muted">The questions REZ answers, so you don’t have to</p>
         <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
-          <div className="marquee flex w-max gap-3">
+          <div className="marquee flex w-max gap-3 hover:[animation-play-state:paused]">
             {[...QUESTIONS, ...QUESTIONS].map((q, i) => (
-              <span key={i} className="whitespace-nowrap rounded-full border border-line-strong px-4 py-2 text-[14px] text-ink-2">{q}</span>
+              <span key={i} className="whitespace-nowrap rounded-full border border-line-strong px-4 py-2 text-[14px] text-ink-2 transition-colors hover:border-ink hover:bg-ink hover:text-white">{q}</span>
             ))}
           </div>
         </div>
@@ -88,21 +92,8 @@ export default function Home() {
             <h2 className="font-display text-balance text-[36px] leading-[1.02] sm:text-[52px]">Three steps. Then it runs itself.</h2>
             <p className="mt-4 text-[17px] text-muted">No training, no scripts to write, no new inbox to watch.</p>
           </Reveal>
-          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3">
-            {[
-              {n: '01', t: 'Paste your link', d: 'REZ reads your website: your products, prices, policies and FAQs.', art: <ArtLink />},
-              {n: '02', t: 'Check what it learned', d: 'See every answer REZ wrote. Change anything in a click.', art: <ArtLearn />},
-              {n: '03', t: 'Add it to your site', d: 'Copy one line onto your website. A chat bubble appears. That’s it.', art: <ArtInstall />},
-            ].map((s, i) => (
-              <Reveal key={s.n} delay={i * 120} className="bg-surface p-8">
-                <div className="font-mono text-[12px] text-faint">{s.n}</div>
-                <div className="my-6">{s.art}</div>
-                <h3 className="font-display text-[22px]" style={{letterSpacing: '-0.025em'}}>{s.t}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-muted">{s.d}</p>
-              </Reveal>
-            ))}
+          <Steps />
           </div>
-        </div>
       </section>
 
       {/* Promises */}
@@ -134,7 +125,7 @@ export default function Home() {
             </p>
           </Reveal>
           <Reveal delay={150}>
-            <div className="rotate-[-1.2deg] rounded-2xl border border-line-strong bg-surface p-6 shadow-[0_30px_60px_-30px_rgba(11,11,12,0.35)]">
+            <div className="rotate-[-1.2deg] transition-transform duration-500 hover:rotate-0 hover:scale-[1.01] rounded-2xl border border-line-strong bg-surface p-6 shadow-[0_30px_60px_-30px_rgba(11,11,12,0.35)]">
               <div className="flex items-center justify-between text-[12px] text-muted">
                 <span className="flex items-center gap-2">
                   <span className="grid h-6 w-6 place-items-center rounded-full bg-ink text-[11px] font-bold text-white">R</span>
@@ -179,7 +170,7 @@ export default function Home() {
               ['A knowledge base made for AI', 'Sanity Context turns those answers into a knowledge base REZ checks before every reply.'],
               ['Learns where it falls short', 'Every conversation is saved to Sanity Insights, so you can see which questions need a better answer.'],
             ].map(([t, d], i) => (
-              <Reveal key={t} delay={150 + i * 100} className="rounded-2xl border border-white/12 p-6">
+              <Reveal key={t} delay={150 + i * 100} className="rounded-2xl border border-white/12 p-6 transition-colors duration-300 hover:border-white/40 hover:bg-white/[0.03]">
                 <div className="font-display text-[20px]" style={{letterSpacing: '-0.02em'}}>{t}</div>
                 <p className="mt-2 text-[15px] leading-relaxed text-white/60">{d}</p>
               </Reveal>

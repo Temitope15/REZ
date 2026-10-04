@@ -15,7 +15,7 @@ export default async function ArticlePage({params}: {params: Promise<{slug: stri
   if (!a) notFound()
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-16 pt-8 sm:px-6">
+    <main className="fade-in mx-auto max-w-5xl px-4 pb-16 pt-8 sm:px-6">
       <Link href={`/dashboard/${slug}?tab=knowledge`} className="text-sm text-muted hover:text-ink">← Knowledge</Link>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <KindTag kind={a.kind} />
@@ -52,7 +52,7 @@ export default async function ArticlePage({params}: {params: Promise<{slug: stri
               {a.conflictNote && <label className="flex items-center gap-2"><input type="checkbox" name="clearConflict" defaultChecked className="h-4 w-4 accent-[var(--accent)]" /> Mark conflict resolved</label>}
             </div>
             <div className="flex items-center gap-3 border-t border-line pt-4">
-              <SubmitButton variant="primary" pendingLabel="Saving…">Save answer</SubmitButton>
+              <SubmitButton variant="primary" pendingLabel="Saving…" doneLabel="Saved">Save answer</SubmitButton>
               <span className="text-xs text-muted">Then push edits from the Overview tab.</span>
             </div>
           </form>

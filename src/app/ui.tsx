@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type {ComponentProps, ReactNode} from 'react'
+import {CountUp} from './CountUp'
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(' ')
@@ -77,7 +78,7 @@ export type ButtonVariant = keyof typeof BUTTON
 
 export function buttonClass(variant: ButtonVariant = 'secondary', size: 'sm' | 'md' = 'md') {
   return cx(
-    'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition disabled:cursor-not-allowed disabled:opacity-50',
+    'press inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition disabled:cursor-not-allowed disabled:opacity-50',
     size === 'sm' ? 'px-3 py-1.5 text-[13px]' : 'px-4 py-2 text-sm',
     BUTTON[variant],
   )
@@ -91,15 +92,17 @@ export function ButtonLink({variant = 'secondary', size = 'md', className, ...pr
   return <Link className={cx(buttonClass(variant, size), className)} {...props} />
 }
 
-export function Stat({label, value, hint, tone}: {label: string; value: ReactNode; hint?: ReactNode; tone?: Tone}) {
+export function Stat({label, value, hint, tone, delay = 0}: {label: string; value: ReactNode; hint?: ReactNode; tone?: Tone; delay?: number}) {
   return (
-    <Card className="px-5 py-4">
+    <div className="fade-in h-full" style={{animationDelay: `${delay}ms`}}>
+    <Card className="lift h-full px-5 py-4">
       <div className="text-[12.5px] font-medium text-muted">{label}</div>
       <div className={cx('font-display mt-2 text-[32px] leading-none tabular-nums', tone === 'warn' ? 'text-warn' : tone === 'bad' ? 'text-bad' : 'text-ink')}>
-        {value}
+        {typeof value === 'number' ? <CountUp value={value} /> : value}
       </div>
       {hint && <div className="mt-2 text-xs text-muted">{hint}</div>}
     </Card>
+    </div>
   )
 }
 

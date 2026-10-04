@@ -170,3 +170,127 @@ body {
   .marquee, .typing span, .pulse-dot { animation: none; }
   .draw { stroke-dashoffset: 0; }
 }
+
+/* ───────── Micro-interactions ───────── */
+.press {
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.lift {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s, border-color 0.25s;
+}
+.lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -24px rgba(11, 11, 12, 0.35);
+}
+.ulink {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.ulink:hover {
+  background-size: 100% 1px;
+}
+@keyframes rez-pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { opacity: 1; transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.pop {
+  animation: rez-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* ───────── Hero: floating questions ───────── */
+@keyframes rez-float {
+  0% { opacity: 0; transform: translateY(30px); }
+  15% { opacity: 1; }
+  55% { opacity: 1; transform: translateY(-40px); }
+  75% { opacity: 0; transform: translateY(-70px); }
+  100% { opacity: 0; transform: translateY(-70px); }
+}
+.float-q {
+  animation: rez-float 9s ease-in-out infinite both;
+}
+@keyframes rez-tick {
+  0%, 38% { opacity: 0; transform: scale(0.4); }
+  45% { opacity: 1; transform: scale(1.15); }
+  52%, 100% { opacity: 1; transform: scale(1); }
+}
+.float-q .tick {
+  animation: rez-tick 9s ease-in-out infinite both;
+  animation-delay: inherit;
+}
+
+/* ───────── How-it-works step animations (run once the card is in view, then loop) ───────── */
+@keyframes rez-type { 0%, 8% { width: 0; } 45%, 100% { width: 12.6ch; } }
+@keyframes rez-caret { 0%, 50% { border-color: currentColor; } 51%, 100% { border-color: transparent; } }
+@keyframes rez-go {
+  0%, 48% { transform: scale(1); box-shadow: 0 0 0 0 rgba(11, 11, 12, 0.35); }
+  55% { transform: scale(0.88); }
+  62% { transform: scale(1.06); box-shadow: 0 0 0 10px rgba(11, 11, 12, 0); }
+  70%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(11, 11, 12, 0); }
+}
+.is-in .anim-type { animation: rez-type 5s steps(12) infinite, rez-caret 0.9s step-end infinite; }
+.is-in .anim-go { animation: rez-go 5s ease-in-out infinite; }
+
+@keyframes rez-row {
+  0%, 10% { opacity: 0; transform: translateX(-8px); }
+  22%, 85% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes rez-check {
+  0%, 18% { transform: scale(0); }
+  26% { transform: scale(1.2); }
+  32%, 85% { transform: scale(1); }
+  95%, 100% { transform: scale(0); }
+}
+@keyframes rez-scan {
+  0%, 5% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  60% { transform: translateY(46px); opacity: 1; }
+  70%, 100% { transform: translateY(46px); opacity: 0; }
+}
+.is-in .anim-row { animation: rez-row 5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.is-in .anim-check { animation: rez-check 5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.is-in .anim-scan { animation: rez-scan 5s ease-in-out infinite both; }
+
+@keyframes rez-bubble {
+  0%, 12% { transform: scale(0); }
+  20% { transform: scale(1.18); }
+  26%, 100% { transform: scale(1); }
+}
+@keyframes rez-panel {
+  0%, 30% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  40%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: none; }
+}
+@keyframes rez-msg {
+  0%, 42% { opacity: 0; transform: translateY(4px); }
+  50%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; }
+}
+.is-in .anim-bubble { animation: rez-bubble 6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.is-in .anim-panel { animation: rez-panel 6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; transform-origin: bottom right; }
+.is-in .anim-msg { animation: rez-msg 6s ease-out infinite both; }
+
+@keyframes rez-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.is-in .anim-fill { animation: rez-fill 1.8s cubic-bezier(0.6, 0, 0.2, 1) 0.3s both; transform-origin: left; }
+@keyframes rez-node { 0% { background: var(--surface); color: var(--muted); } 100% { background: var(--ink); color: #fff; border-color: var(--ink); } }
+.is-in .anim-node { animation: rez-node 0.4s ease both; }
+
+@keyframes rez-count-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: rez-count-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .float-q, .float-q .tick, .anim-type, .anim-go, .anim-row, .anim-check, .anim-scan, .anim-bubble, .anim-panel, .anim-msg, .anim-fill, .anim-node, .pop, .fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .anim-type { width: 12.6ch !important; }
+  .lift:hover { transform: none; }
+}

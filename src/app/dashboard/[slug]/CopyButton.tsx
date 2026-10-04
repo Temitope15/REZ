@@ -19,7 +19,7 @@ export function CopyButton({text, label = 'Copy'}: {text: string; label?: string
         }
       }}
     >
-      {copied ? 'Copied' : label}
+      {copied ? (<><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="pop"><path d="m5 12 5 5 9-10" /></svg>Copied</>) : label}
     </button>
   )
 }

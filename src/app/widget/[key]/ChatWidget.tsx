@@ -86,7 +86,7 @@ export function ChatWidget({widgetKey, businessName, botName, greeting, accent, 
     <div className="rez-root" style={{['--accent' as string]: accent}}>
       <style>{`
         *{box-sizing:border-box} html,body{margin:0;height:100%;background:#fff}
-        .rez-root{display:flex;flex-direction:column;height:100vh;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#111}
+        .rez-root{display:flex;flex-direction:column;height:100vh;font:14px/1.45 var(--font-body),system-ui,sans-serif;color:#111}
         .rez-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent);color:#fff}
         .rez-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:700}
         .rez-head h1{font-size:15px;margin:0;font-weight:600} .rez-head p{margin:0;font-size:12px;opacity:.85}
@@ -106,6 +106,13 @@ export function ChatWidget({widgetKey, businessName, botName, greeting, accent, 
         .rez-form button:disabled{opacity:.5;cursor:default}
         .rez-foot{font-size:11px;color:#9ca3af;text-align:center;padding:0 0 8px;background:#fff}
         .rez-bubble a{color:inherit;text-decoration:underline}
+        @keyframes rez-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+        .rez-bubble,.rez-tool{animation:rez-in .35s cubic-bezier(.2,.8,.2,1) both}
+        .rez-user{transform-origin:bottom right}.rez-bot{transform-origin:bottom left}
+        .rez-form button{transition:transform .15s,opacity .2s}.rez-form button:active:not(:disabled){transform:scale(.94)}
+        .rez-form input{transition:border-color .2s,box-shadow .2s}.rez-form input:focus{box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+        .rez-x{transition:transform .2s}.rez-x:hover{transform:rotate(90deg)}
+        @media (prefers-reduced-motion:reduce){.rez-bubble,.rez-tool{animation:none}}
       `}</style>
       <div className="rez-head">
         <div className="rez-avatar">{botName.slice(0, 1).toUpperCase()}</div>
