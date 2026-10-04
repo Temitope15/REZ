@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>REZ widget demo</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:640px;margin:60px auto;padding:0 16px;color:#222;line-height:1.5}</style>
+</head>
+<body>
+  <h1>Pretend business website</h1>
+  <p>This page stands in for a customer's site. The chat bubble in the bottom right is REZ, added with one script tag.</p>
+  <p>Change the key in the URL to test another business: <code>/demo.html?key=rez_...</code></p>
+  <script>
+    var key = new URLSearchParams(location.search).get('key') || 'rez_13c58a2c2293f1e18c80eaf4';
+    var s = document.createElement('script');
+    s.src = '/widget.js';
+    s.async = true;
+    s.setAttribute('data-rez-key', key);
+    document.body.appendChild(s);
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Render Blueprint for the REZ ingest worker (free plan).
+# In Render: New > Blueprint > pick this repo. Fill the env vars marked sync: false when prompted.
+services:
+  - type: web
+    name: rez-worker
+    runtime: docker
+    plan: free
+    dockerfilePath: ./worker/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: REZ_WORKER_SECRET
+        generateValue: true
+      - key: SANITY_PROJECT_ID
+        sync: false
+      - key: SANITY_DATASET
+        value: production
+      - key: SANITY_WRITE_TOKEN
+        sync: false
+      - key: SANITY_ORGANIZATION_ID
+        sync: false
+      - key: SANITY_ORGANIZATION_TOKEN
+        sync: false
+      - key: GOOGLE_GENERATIVE_AI_API_KEY
+        sync: false

@@ -1,69 +1,54 @@
-import Image from "next/image";
+import Link from 'next/link'
+import {OnboardForm} from './OnboardForm'
+import {Logo, ButtonLink} from './ui'
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="min-h-screen">
+      <header className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Logo />
+        <ButtonLink href="/dashboard" variant="ghost" size="sm">Dashboard →</ButtonLink>
+      </header>
+
+      <main className="mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
+        <section>
+          <div className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1 text-xs font-medium text-ink-2 ring-1 ring-line">
+            <span className="h-1.5 w-1.5 rounded-full bg-ok" /> Built on Sanity Context
+          </div>
+          <h1 className="mt-5 text-[40px] font-semibold leading-[1.08] tracking-tight sm:text-[52px]">
+            Your support team, <span className="text-accent">minus the repetitive tickets.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-2">
+            Give REZ your website. It reads every page, builds a structured knowledge base in Sanity, and answers your customers with sources.
+            When it can’t help, it emails your team a ready-to-answer ticket instead of guessing.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            {[
+              ['Reads your site', 'Including JavaScript apps. Every answer keeps a link to the page it came from.'],
+              ['You stay in control', 'Edit any answer. Pages that disagree are flagged for you to decide.'],
+              ['Escalates honestly', 'No answer, no guess. Your inbox gets the transcript and a draft reply.'],
+            ].map(([t, d]) => (
+              <div key={t} className="rounded-2xl border border-line bg-surface p-4">
+                <div className="text-sm font-semibold">{t}</div>
+                <div className="mt-1 text-[13px] leading-relaxed text-muted">{d}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 rounded-2xl border border-line bg-surface p-5">
+            <div className="text-xs font-medium uppercase tracking-wide text-faint">The whole integration</div>
+            <pre className="mt-2 overflow-x-auto font-mono text-[12.5px] text-ink-2">{`<script src="…/widget.js" data-rez-key="rez_…" async></script>`}</pre>
+          </div>
+        </section>
+
+        <section id="start" className="lg:pt-6">
+          <OnboardForm />
+          <p className="mt-4 text-center text-sm text-muted">
+            Already set up? <Link href="/dashboard" className="text-accent underline">Open the dashboard</Link>
+          </p>
+        </section>
       </main>
     </div>
-  );
+  )
 }

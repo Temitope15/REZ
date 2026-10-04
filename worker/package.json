@@ -1,0 +1,19 @@
+{
+  "name": "rez-worker",
+  "private": true,
+  "type": "module",
+  "description": "REZ ingest worker: crawl (with headless Chrome), extract with Gemini, write to Sanity, build the Sanity Context Knowledge Base.",
+  "scripts": {
+    "start": "tsx worker/server.mts"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "4.0.87",
+    "@sanity/client": "8.9.0",
+    "ai": "7.0.127",
+    "cheerio": "1.2.0",
+    "playwright": "1.63.0",
+    "tsx": "4.23.15",
+    "turndown": "7.2.4",
+    "zod": "4.6.5"
+  }
+}
