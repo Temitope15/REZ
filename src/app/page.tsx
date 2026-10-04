@@ -33,12 +33,8 @@ export default function Home() {
       <header className="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <Link href="/" aria-label="REZ home"><Logo /></Link>
-          <nav className="hidden items-center gap-7 text-[14px] text-ink-2 md:flex">
-            <a href="#how" className="hover:text-ink">How it works</a>
-            <a href="#handoff" className="hover:text-ink">When it can’t help</a>
-            <a href="#sanity" className="hover:text-ink">Powered by Sanity</a>
-          </nav>
           <div className="flex items-center gap-2">
+            <a href="#how" className="hidden rounded-lg px-3 py-2 text-[14px] text-ink-2 hover:text-ink md:block">How it works</a>
             <Link href="/dashboard" className="hidden rounded-lg px-3 py-2 text-[14px] text-ink-2 hover:text-ink sm:block">Dashboard</Link>
             <a href="#start" className="group inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-[14px] font-medium text-white">
               Get started <Arrow />
@@ -50,16 +46,12 @@ export default function Home() {
       {/* Hero */}
       <section className="bg-hatch relative border-b border-line">
         <div className="mx-auto max-w-6xl px-5 pb-24 pt-16 text-center sm:pt-24">
-          <div className="rise inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-3 py-1 text-[12.5px] text-ink-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-ok pulse-dot" /> REZ · customer support, handled
-          </div>
-          <h1 className="font-display rise mx-auto mt-6 max-w-5xl text-balance text-[44px] leading-[0.98] sm:text-[60px] lg:text-[72px]" style={{animationDelay: '80ms'}}>
-            Your customers get answers.
-            <br />
-            You get your day back.
+          <h1 className="font-display rise mx-auto max-w-5xl text-balance text-[44px] leading-[0.98] sm:text-[60px] lg:text-[72px]" style={{animationDelay: '80ms'}}>
+            Never answer the same
+            <br className="hidden sm:block" /> question twice.
           </h1>
           <p className="rise mx-auto mt-6 max-w-xl text-balance text-[17px] leading-relaxed text-muted sm:text-[19px]" style={{animationDelay: '160ms'}}>
-            Paste your website link. REZ learns your business and replies to customers day and night. If it can’t help, it passes the question to you.
+            Share your website link. REZ learns your business and answers your customers for you, day and night. Anything it can’t handle comes straight to you.
           </p>
           <div className="rise mt-9 flex flex-wrap items-center justify-center gap-3" style={{animationDelay: '240ms'}}>
             <a href="#start" className="group inline-flex items-center gap-2 rounded-xl bg-ink px-6 py-3.5 text-[15px] font-medium text-white shadow-[0_10px_30px_-12px_rgba(11,11,12,0.6)]">
