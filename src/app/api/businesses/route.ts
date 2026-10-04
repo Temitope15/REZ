@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       websiteUrl,
       escalationEmail,
       publicKey: newPublicKey(),
-      allowedDomains: [hostname, hostname.replace(/^www\./, '')],
+      allowedDomains: [...new Set([hostname, hostname.replace(/^www\./, '')])],
       status: 'pending',
       widget: {botName: 'Rez', greeting: `Hi! I'm Rez, ${name}'s assistant. How can I help?`, accentColor: '#0b0b0c'},
     })) as unknown as BusinessDoc)

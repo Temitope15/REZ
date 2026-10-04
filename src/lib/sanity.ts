@@ -40,6 +40,8 @@ export interface BusinessDoc {
   status: BusinessStatus
   statusMessage?: string
   lastIngestedAt?: string
+  ingestAttempts?: number
+  _updatedAt?: string
   widget?: {botName?: string; greeting?: string; accentColor?: string}
 }
 

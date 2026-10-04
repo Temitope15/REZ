@@ -1,5 +1,6 @@
 import {sanityWrite, type BusinessDoc} from './sanity'
 import {sendEscalationEmail} from './email'
+import {getAppUrl} from './appUrl'
 
 export interface EscalationInput {
   business: BusinessDoc
@@ -45,7 +46,7 @@ export async function escalate(input: EscalationInput): Promise<{ticketId: strin
 
   let emailSent = false
   try {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || ''
+    const appUrl = await getAppUrl().catch(() => (process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, ''))
     await sendEscalationEmail({
       to: input.business.escalationEmail,
       businessName: input.business.name,

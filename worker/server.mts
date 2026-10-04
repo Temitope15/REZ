@@ -110,4 +110,31 @@ const server = http.createServer(async (req, res) => {
   send(res, 404, {error: 'not found'})
 })
 
-server.listen(PORT, () => console.log(`[worker] listening on :${PORT}`))
+/**
+ * If the worker restarted mid-job (deploy, crash, or the free instance running out of memory),
+ * businesses are left half-set-up. On boot, pick them up again, at most twice each.
+ */
+async function resumeInterruptedJobs() {
+  const cutoff = new Date(Date.now() - 2 * 60 * 1000).toISOString()
+  const stuck = await sanityWrite.fetch<{_id: string; status: string; ingestAttempts?: number}[]>(
+    `*[_type == "business" && status in ["pending", "crawling", "extracting", "building"] && _updatedAt < $cutoff]{_id, status, ingestAttempts}`,
+    {cutoff},
+  )
+  for (const b of stuck) {
+    const attempts = b.ingestAttempts ?? 0
+    if (attempts >= 2) {
+      await setBusinessStatus(b._id, 'error', 'Setup was interrupted twice. Click Try again, or try a smaller site.')
+      continue
+    }
+    await sanityWrite.patch(b._id).set({ingestAttempts: attempts + 1}).commit()
+    await setBusinessStatus(b._id, 'pending', 'Resuming setup after a restart')
+    queue.push({type: b.status === 'building' ? 'refresh-kb' : 'ingest', businessId: b._id, queuedAt: new Date().toISOString()})
+    console.log(`[worker] resuming ${b._id} (attempt ${attempts + 1})`)
+  }
+  if (queue.length) void drain()
+}
+
+server.listen(PORT, () => {
+  console.log(`[worker] listening on :${PORT}`)
+  resumeInterruptedJobs().catch((err) => console.error('[worker] resume failed', err))
+})

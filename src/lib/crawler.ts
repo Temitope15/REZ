@@ -21,6 +21,10 @@ export interface CrawlOptions {
   render?: 'auto' | 'always' | 'never'
   /** Max pages rendered in Chrome at the same time. Keep low on small servers. */
   renderConcurrency?: number
+  /** Stop starting new pages after this long and keep what was read. Default 5 minutes. */
+  timeBudgetMs?: number
+  /** Page cap once the site turns out to need Chrome (each page is slow to render). Default 20. */
+  maxRenderedPages?: number
 }
 
 const USER_AGENT = 'RezBot/0.1 (customer-support knowledge crawler)'
@@ -175,7 +179,9 @@ export function looksLikeShell(html: string, markdown: string): boolean {
  * Support-looking pages are visited first. Pages with little text are skipped.
  */
 export async function crawlSite(startUrl: string, opts: CrawlOptions = {}): Promise<CrawledPage[]> {
-  const maxPages = opts.maxPages ?? 40
+  let maxPages = opts.maxPages ?? 40
+  const deadline = Date.now() + (opts.timeBudgetMs ?? (Number(process.env.REZ_CRAWL_BUDGET_MS) || 5 * 60 * 1000))
+  const maxRenderedPages = opts.maxRenderedPages ?? 20
   const concurrency = opts.concurrency ?? 4
   const timeoutMs = opts.timeoutMs ?? 15000
 
@@ -241,6 +247,7 @@ export async function crawlSite(startUrl: string, opts: CrawlOptions = {}): Prom
         const rendered = htmlToPage(url, html)
         if (rendered.page.markdown.length > plain.page.markdown.length + 100) {
           siteNeedsJs = true
+          maxPages = Math.min(maxPages, maxRenderedPages)
           return {page: {...rendered.page, rendered: true}, links: [...new Set([...rendered.links, ...plain.links])]}
         }
         return plain
@@ -257,11 +264,12 @@ export async function crawlSite(startUrl: string, opts: CrawlOptions = {}): Prom
 
   await new Promise<void>((resolve) => {
     const pump = () => {
-      if (pages.length >= maxPages || fetched >= maxFetches || (queue.length === 0 && active === 0)) {
+      const outOfTime = Date.now() > deadline
+      if (pages.length >= maxPages || fetched >= maxFetches || outOfTime || (queue.length === 0 && active === 0)) {
         if (active === 0) resolve()
         return
       }
-      while (active < concurrency && queue.length && pages.length + active < maxPages && fetched < maxFetches) {
+      while (active < concurrency && queue.length && pages.length + active < maxPages && fetched < maxFetches && Date.now() <= deadline) {
         sortQueue()
         const url = queue.shift()!
         active++

@@ -18,7 +18,8 @@ async function getBrowser(): Promise<Browser | null> {
         const {chromium} = await import('playwright')
         return await chromium.launch({
           headless: true,
-          args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--no-zygote'],
+          // Tight memory settings so Chrome fits next to Node on a 512 MB free instance.
+          args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--no-zygote', '--disable-extensions', '--disable-background-networking', '--disable-default-apps', '--mute-audio', '--renderer-process-limit=1', '--js-flags=--max-old-space-size=192'],
         })
       } catch (err) {
         console.warn('Headless browser unavailable, JavaScript sites will not be rendered:', String((err as Error)?.message).split('\n')[0])
@@ -33,10 +34,10 @@ export async function browserAvailable() {
   return Boolean(await getBrowser())
 }
 
-const BLOCKED = new Set(['image', 'media', 'font'])
+const BLOCKED = new Set(['image', 'media', 'font', 'stylesheet'])
 
 /** Load the page in Chrome, let its JavaScript run, and return the final HTML. */
-export async function renderHtml(url: string, timeoutMs = 25000): Promise<string | null> {
+export async function renderHtml(url: string, timeoutMs = 15000): Promise<string | null> {
   const browser = await getBrowser()
   if (!browser) return null
   const context = await browser.newContext({
@@ -47,12 +48,10 @@ export async function renderHtml(url: string, timeoutMs = 25000): Promise<string
   const page = await context.newPage()
   try {
     await page.route('**/*', (route) => (BLOCKED.has(route.request().resourceType()) ? route.abort() : route.continue()))
-    try {
-      await page.goto(url, {waitUntil: 'networkidle', timeout: timeoutMs})
-    } catch {
-      // Some apps never go fully idle (analytics, websockets). Fall back to what has rendered so far.
-      await page.goto(url, {waitUntil: 'domcontentloaded', timeout: timeoutMs}).catch(() => null)
-    }
+    // Don't wait for "network idle": apps with analytics or websockets never go idle, which cost ~25s per page.
+    // Load the document, then wait only until real text has replaced the loading shell.
+    const nav = await page.goto(url, {waitUntil: 'domcontentloaded', timeout: timeoutMs}).catch(() => null)
+    if (!nav) return null
     // Wait until the app has replaced its loading shell with real text, up to a few seconds.
     await page
       .waitForFunction(

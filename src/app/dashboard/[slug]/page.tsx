@@ -4,6 +4,7 @@ import {sanityWrite, type BusinessDoc} from '@/lib/sanity'
 import {Badge, ButtonLink, Card, CardHeader, EmptyState, KIND_LABEL, KindTag, Stat, StatusPill, cx, hostOf, timeAgo} from '../../ui'
 import {createArticle, refreshKnowledgeBase, reingest, updateBusiness} from '../actions'
 import {StatusPoller} from './StatusPoller'
+import {getAppUrl} from '@/lib/appUrl'
 import {CopyButton} from './CopyButton'
 import {SubmitButton} from './SubmitButton'
 
@@ -69,6 +70,7 @@ export default async function BusinessPage({
     sanityWrite.fetch<number>(`count(*[_type == "sourcePage" && business._ref == $id])`, {id: business._id}),
   ])
 
+  const appUrl = await getAppUrl()
   const busy = ['pending', 'crawling', 'extracting', 'building'].includes(business.status)
   const review = articles.filter((a) => a.needsReview).length
   const openTickets = tickets.filter((t) => t.status === 'open')
@@ -130,7 +132,7 @@ export default async function BusinessPage({
         )}
         {tab === 'knowledge' && <Knowledge business={business} slug={slug} articles={articles} sp={sp} base={base} busy={busy} />}
         {tab === 'tickets' && <Tickets tickets={tickets} base={base} filter={sp.status} />}
-        {tab === 'install' && <Install business={business} />}
+        {tab === 'install' && <Install business={business} appUrl={appUrl} />}
         {tab === 'settings' && <Settings business={business} slug={slug} busy={busy} />}
       </div>
     </main>
@@ -158,6 +160,19 @@ function Overview({business, busy, articles, review, openTickets, pageCount, bas
   const stepIndex = Math.max(0, STEPS.findIndex((s) => s.id === business.status))
   return (
     <div className="grid gap-6 [&>*]:min-w-0">
+      {busy && business._updatedAt && Date.now() - new Date(business._updatedAt).getTime() > 8 * 60 * 1000 && (
+        <Card className="flex flex-wrap items-center justify-between gap-3 border-warn/30 bg-warn-soft/50 p-5">
+          <div>
+            <div className="font-medium text-warn">This is taking longer than usual</div>
+            <div className="mt-0.5 text-sm text-ink-2">Nothing has changed for a few minutes. You can start the setup again; nothing is lost.</div>
+          </div>
+          <form action={reingest}>
+            <input type="hidden" name="businessId" value={business._id} />
+            <input type="hidden" name="slug" value={business.slug.current} />
+            <SubmitButton variant="primary" pendingLabel="Starting…" doneLabel="Restarted">Try again</SubmitButton>
+          </form>
+        </Card>
+      )}
       {(busy || business.status === 'error') && (
         <Card className={cx('p-5', business.status === 'error' && 'border-bad/30 bg-bad-soft/40')}>
           {business.status === 'error' ? (
@@ -426,8 +441,7 @@ function Tickets({tickets, base, filter}: {tickets: TicketRow[]; base: string; f
 
 /* ---------- Install ---------- */
 
-function Install({business}: {business: BusinessDoc}) {
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '')
+function Install({business, appUrl}: {business: BusinessDoc; appUrl: string}) {
   const snippet = `<script src="${appUrl}/widget.js" data-rez-key="${business.publicKey}" async></script>`
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px] [&>*]:min-w-0">

@@ -114,11 +114,21 @@ export async function ingestBusiness(businessId: string, opts: IngestOptions = {
 
   try {
     await setBusinessStatus(business._id, 'crawling', 'Reading your website')
+    let lastProgress = 0
     const pages = await crawlSite(business.websiteUrl, {
       maxPages: opts.maxPages ?? 40,
       concurrency: Number(process.env.REZ_CRAWL_CONCURRENCY) || 4,
       renderConcurrency: Number(process.env.REZ_RENDER_CONCURRENCY) || 2,
-      onProgress: (done, queued, url) => log(`crawled ${done}, queued ${queued}: ${url}`),
+      onProgress: (done, queued, url) => {
+        log(`crawled ${done}, queued ${queued}: ${url}`)
+        // Show live progress in the dashboard, at most every 4 seconds.
+        const now = Date.now()
+        if (now - lastProgress > 4000) {
+          lastProgress = now
+          const rendered = url.endsWith('(rendered)') ? ' (this site needs a browser, so it takes a little longer)' : ''
+          setBusinessStatus(business._id, 'crawling', `Read ${done + 1} ${done === 0 ? 'page' : 'pages'} so far${rendered}`).catch(() => null)
+        }
+      },
     })
     if (!pages.length) throw new Error('No readable pages found. Is the site reachable without JavaScript?')
     log(`crawl done: ${pages.length} pages`)
@@ -159,7 +169,7 @@ export async function ingestBusiness(businessId: string, opts: IngestOptions = {
         log('knowledge base limit reached, serving answers from the shared dataset')
         await sanityWrite
           .patch(business._id)
-          .set({status: 'ready', statusMessage: `${merged.length} answers ready (shared dataset search; Knowledge Base limit reached)`, lastIngestedAt: new Date().toISOString()})
+          .set({status: 'ready', statusMessage: `${merged.length} answers ready (shared dataset search; Knowledge Base limit reached)`, lastIngestedAt: new Date().toISOString(), ingestAttempts: 0})
           .commit()
         return {pages: pages.length, articles: merged.length, created}
       }
@@ -167,7 +177,7 @@ export async function ingestBusiness(businessId: string, opts: IngestOptions = {
 
     await sanityWrite
       .patch(business._id)
-      .set({status: 'ready', statusMessage: `${merged.length} answers from ${pages.length} pages`, lastIngestedAt: new Date().toISOString()})
+      .set({status: 'ready', statusMessage: `${merged.length} answers from ${pages.length} pages`, lastIngestedAt: new Date().toISOString(), ingestAttempts: 0})
       .commit()
     return {pages: pages.length, articles: merged.length, created}
   } catch (err) {
