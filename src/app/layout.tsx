@@ -1,19 +1,19 @@
 import type {Metadata} from 'next'
-import {Geist, Geist_Mono} from 'next/font/google'
+import {Bricolage_Grotesque, Geist_Mono, Instrument_Sans} from 'next/font/google'
 import './globals.css'
 
-const geistSans = Geist({variable: '--font-geist-sans', subsets: ['latin']})
-const geistMono = Geist_Mono({variable: '--font-geist-mono', subsets: ['latin']})
+const display = Bricolage_Grotesque({variable: '--font-display-face', subsets: ['latin'], weight: ['600', '700', '800']})
+const body = Instrument_Sans({variable: '--font-body', subsets: ['latin']})
+const mono = Geist_Mono({variable: '--font-geist-mono', subsets: ['latin']})
 
 export const metadata: Metadata = {
-  title: 'REZ · Customer support that reads your website',
-  description:
-    'REZ turns your website into a structured Sanity knowledge base, answers customers with sources, and emails your team only when it cannot help.',
+  title: 'REZ · Your customers, answered',
+  description: 'Paste your website link. REZ learns your business and answers your customers day and night. When it can’t help, it hands the question to you.',
 }
 
 export default function RootLayout({children}: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   )

@@ -30,7 +30,7 @@ export default async function DashboardHome() {
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-semibold tracking-tight">Businesses</h1>
+          <h1 className="font-display text-[36px] leading-none">Businesses</h1>
           <p className="mt-1 text-sm text-muted">Every business REZ answers for. Open one to review its answers and tickets.</p>
         </div>
       </div>

@@ -22,7 +22,7 @@ export default async function WidgetPage({params}: {params: Promise<{key: string
       businessName={business.name}
       botName={business.widget?.botName || 'Rez'}
       greeting={business.widget?.greeting || `Hi! I'm Rez, ${business.name}'s assistant. How can I help?`}
-      accent={business.widget?.accentColor || '#2563eb'}
+      accent={business.widget?.accentColor || '#0b0b0c'}
       ready={business.status === 'ready' || Boolean(business.knowledgeBaseId)}
     />
   )

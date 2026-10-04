@@ -87,7 +87,7 @@ export default async function BusinessPage({
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-[24px] font-semibold tracking-tight">{business.name}</h1>
+              <h1 className="font-display text-[30px] leading-none">{business.name}</h1>
               <StatusPill status={business.status} />
             </div>
             <a href={business.websiteUrl} target="_blank" rel="noopener" className="text-sm text-muted hover:text-ink">
@@ -104,19 +104,19 @@ export default async function BusinessPage({
       </div>
 
       {/* Tabs */}
-      <nav className="mt-6 flex gap-1 overflow-x-auto border-b border-line">
+      <nav className="mt-7 inline-flex max-w-full gap-1 overflow-x-auto rounded-xl border border-line bg-surface p-1">
         {TABS.map((t) => (
           <Link
             key={t.id}
             href={t.id === 'overview' ? base : `${base}?tab=${t.id}`}
             className={cx(
-              '-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition',
-              tab === t.id ? 'border-ink text-ink' : 'border-transparent text-muted hover:text-ink',
+              'flex items-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-1.5 text-sm font-medium transition',
+              tab === t.id ? 'bg-ink text-white' : 'text-muted hover:bg-surface-2 hover:text-ink',
             )}
           >
             {t.label}
             {counts[t.id] !== undefined && (
-              <span className={cx('rounded-full px-1.5 text-[11px] tabular-nums', t.id === 'tickets' && counts[t.id]! > 0 ? 'bg-warn-soft text-warn' : 'bg-surface-2 text-muted ring-1 ring-line')}>
+              <span className={cx('rounded-full px-1.5 text-[11px] tabular-nums', tab === t.id ? 'bg-white/20 text-white' : t.id === 'tickets' && counts[t.id]! > 0 ? 'bg-warn-soft text-warn' : 'bg-surface-2 text-muted ring-1 ring-line')}>
                 {counts[t.id]}
               </span>
             )}

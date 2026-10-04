@@ -23,7 +23,7 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
       </header>
       <div className="flex-1">{children}</div>
       <footer className="border-t border-line py-6 text-center text-xs text-faint">
-        REZ · knowledge in Sanity Content Lake · answers through Sanity Context
+        REZ · powered by Sanity
       </footer>
     </div>
   )

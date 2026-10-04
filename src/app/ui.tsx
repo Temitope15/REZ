@@ -9,7 +9,7 @@ export function Logo({className}: {className?: string}) {
   return (
     <span className={cx('inline-flex items-center gap-2 font-semibold tracking-tight text-ink', className)}>
       <span className="grid h-7 w-7 place-items-center rounded-lg bg-ink text-[13px] font-bold text-white">R</span>
-      <span className="text-[15px]">REZ</span>
+      <span className="font-display text-[18px]">REZ</span>
     </span>
   )
 }
@@ -95,7 +95,7 @@ export function Stat({label, value, hint, tone}: {label: string; value: ReactNod
   return (
     <Card className="px-5 py-4">
       <div className="text-[12.5px] font-medium text-muted">{label}</div>
-      <div className={cx('mt-1.5 text-[28px] font-semibold leading-none tracking-tight tabular-nums', tone === 'warn' ? 'text-warn' : tone === 'bad' ? 'text-bad' : 'text-ink')}>
+      <div className={cx('font-display mt-2 text-[32px] leading-none tabular-nums', tone === 'warn' ? 'text-warn' : tone === 'bad' ? 'text-bad' : 'text-ink')}>
         {value}
       </div>
       {hint && <div className="mt-2 text-xs text-muted">{hint}</div>}

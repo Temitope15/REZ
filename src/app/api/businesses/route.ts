@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       publicKey: newPublicKey(),
       allowedDomains: [hostname, hostname.replace(/^www\./, '')],
       status: 'pending',
-      widget: {botName: 'Rez', greeting: `Hi! I'm Rez, ${name}'s assistant. How can I help?`, accentColor: '#2563eb'},
+      widget: {botName: 'Rez', greeting: `Hi! I'm Rez, ${name}'s assistant. How can I help?`, accentColor: '#0b0b0c'},
     })) as unknown as BusinessDoc)
 
   try {

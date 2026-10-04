@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
-/* REZ design tokens. Light, warm, calm: an operations console a small-business owner opens every morning. */
+/* REZ · "Minimal" design system: monochrome, paper background, heavy display type, black actions. */
 :root {
   color-scheme: light;
-  --bg: #f6f4ef;
+  --bg: #f4f3f0;
   --surface: #ffffff;
-  --surface-2: #faf9f6;
-  --ink: #17161b;
-  --ink-2: #3a3840;
-  --muted: #6e6b74;
-  --faint: #a19ea6;
-  --line: #e6e2d9;
-  --line-strong: #d6d1c5;
-  --accent: #4338ca;
+  --surface-2: #f8f7f5;
+  --ink: #0b0b0c;
+  --ink-2: #2b2b2e;
+  --muted: #6b6a6e;
+  --faint: #a3a2a6;
+  --line: #e4e2dd;
+  --line-strong: #d3d0c9;
+  --accent: #0b0b0c;
   --accent-ink: #ffffff;
-  --accent-soft: #eef0ff;
-  --ok: #047857;
-  --ok-soft: #e6f6ef;
+  --accent-soft: #efeeea;
+  --ok: #15803d;
+  --ok-soft: #ecf6ef;
   --warn: #b45309;
-  --warn-soft: #fdf3e2;
+  --warn-soft: #fbf3e6;
   --bad: #b91c1c;
-  --bad-soft: #fdecec;
+  --bad-soft: #fbeeee;
 }
 
 @theme inline {
@@ -42,36 +42,52 @@
   --color-warn-soft: var(--warn-soft);
   --color-bad: var(--bad);
   --color-bad-soft: var(--bad-soft);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display-face);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-feature-settings: "ss01", "cv11";
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 ::selection {
-  background: var(--accent-soft);
+  background: #0b0b0c;
+  color: #fff;
 }
 
-/* Shared control styles so every form in the app looks the same. */
+.font-display {
+  font-family: var(--font-display-face), var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+/* Faint diagonal hatch behind heroes, like a sheet of drafting paper. */
+.bg-hatch {
+  background-image: repeating-linear-gradient(135deg, rgba(11, 11, 12, 0.035) 0 1px, transparent 1px 14px);
+}
+.bg-dots {
+  background-image: radial-gradient(rgba(11, 11, 12, 0.09) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Shared form controls */
 .field {
   width: 100%;
   border: 1px solid var(--line-strong);
   background: var(--surface);
   border-radius: 10px;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.9rem;
   color: var(--ink);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .field:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(11, 11, 12, 0.08);
 }
 .field::placeholder {
   color: var(--faint);
@@ -89,10 +105,68 @@ body {
   color: var(--muted);
 }
 
+/* Motion */
 @keyframes rez-pulse {
   0%, 100% { opacity: 0.35; }
   50% { opacity: 1; }
 }
 .pulse-dot {
   animation: rez-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes rez-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+.rise {
+  animation: rez-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes rez-blink {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-2px); }
+}
+.typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: rez-blink 1.2s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes rez-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  animation: rez-marquee 38s linear infinite;
+}
+
+@keyframes rez-draw {
+  to { stroke-dashoffset: 0; }
+}
+.draw {
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+}
+.is-in .draw {
+  animation: rez-draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .rise { opacity: 1; transform: none; animation: none; transition: none; }
+  .marquee, .typing span, .pulse-dot { animation: none; }
+  .draw { stroke-dashoffset: 0; }
 }

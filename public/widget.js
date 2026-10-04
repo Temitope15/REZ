@@ -13,7 +13,7 @@
 
   var key = script.getAttribute('data-rez-key');
   var host = script.getAttribute('data-rez-host') || new URL(script.src).origin;
-  var color = script.getAttribute('data-rez-color') || '#2563eb';
+  var color = script.getAttribute('data-rez-color') || '#0b0b0c';
   if (!key) return;
 
   var frameUrl = host + '/widget/' + encodeURIComponent(key) + '?host=' + encodeURIComponent(location.hostname);
