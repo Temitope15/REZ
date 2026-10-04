@@ -24,6 +24,7 @@
     .hint { position: fixed; right: 92px; bottom: 34px; background: var(--ink); color: #fff; font-size: 13px; padding: 8px 12px; border-radius: 10px; box-shadow: 0 10px 30px -12px rgba(0,0,0,.5); animation: nudge 2.4s ease-in-out infinite; }
     .hint::after { content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); border: 6px solid transparent; border-left-color: var(--ink); border-right: 0; }
     @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+    body:has(.rez-btn.open) .hint { display: none; }
     @media (max-width: 600px) { nav { display: none; } .hint { display: none; } }
   </style>
 </head>

@@ -1,5 +1,5 @@
 ---
-title: REZ: give it your website, get a support agent that cites its sources and knows when to call a human
+title: REZ: never answer the same customer question twice
 published: false
 tags: devchallenge, sanitychallenge, ai, nextjs
 ---
@@ -18,7 +18,7 @@ Small businesses answer the same questions all day: where is my order, can I ret
 4. **It answers customers** in a chat widget, cites the entry it used, and says so when the knowledge base doesn't cover a question.
 5. **It escalates instead of guessing.** Refunds, account changes, complaints, or anything it can't answer become a ticket in Sanity and an email to the business with the transcript and a drafted reply.
 
-The business owner gets a dashboard to review answers, resolve conflicts, add what the website doesn't say, and push edits back to the Knowledge Base in one click.
+Behind the chat bubble, the owner gets a calm dashboard to review answers, resolve conflicts, add what the website doesn't say, and push edits back to the Knowledge Base in one click.
 
 ## Demo
 
@@ -31,11 +31,21 @@ Things to ask the Death Wish Coffee demo agent:
 | Ask | What happens |
 |---|---|
 | "What's your return policy if I don't like the coffee?" | Answers with the exact 30-day / $40 rule and notes coffee isn't returnable. Cites *Returns, Refunds & Exchanges*. |
-| "Do you ship internationally?" | Answers from the shipping entry. |
+| "Do you ship internationally?" | "Yes, to over 195 countries. Delivery takes 2–4 weeks; customs are calculated at checkout." Cites *International Shipping & Customs*. |
 | "What's the weather today?" | Says it doesn't know. No guessing. |
 | "My bag arrived torn, I want a refund. I'm Ada, ada@example.com" | Can't issue refunds, so it opens a ticket and emails the team with a suggested reply. |
 
-<!-- TODO: screenshots: widget answering with a source, dashboard overview, a ticket -->
+![The REZ landing page](https://raw.githubusercontent.com/YOUR_USERNAME/rez/main/docs/screenshots/01-landing.png)
+
+![REZ answering a customer on a shop website, with its source](https://raw.githubusercontent.com/YOUR_USERNAME/rez/main/docs/screenshots/03-widget-answer.png)
+
+![The business dashboard](https://raw.githubusercontent.com/YOUR_USERNAME/rez/main/docs/screenshots/04-dashboard.png)
+
+![Every answer REZ wrote, editable, with conflicts flagged](https://raw.githubusercontent.com/YOUR_USERNAME/rez/main/docs/screenshots/05-knowledge.png)
+
+![An escalated ticket with transcript and suggested reply](https://raw.githubusercontent.com/YOUR_USERNAME/rez/main/docs/screenshots/06-ticket.png)
+
+<!-- Replace YOUR_USERNAME after pushing, or drag the files from docs/screenshots into the DEV editor. -->
 
 ## Code
 

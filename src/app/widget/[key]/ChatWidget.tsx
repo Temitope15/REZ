@@ -39,13 +39,18 @@ function toolLabel(type: string) {
 function renderText(text: string) {
   // Minimal Markdown: bold, lists, line breaks, and a muted Source line.
   const lines = text.split('\n')
-  return lines.map((line, i) => {
+  return lines.map((rawLine, i) => {
+    let line = rawLine
     const isSource = /^\s*\*{0,2}source:?\*{0,2}/i.test(line)
+    // Show "- item" / "* item" as a real bullet.
+    line = line.replace(/^(\s*)[-*]\s+/, '$1• ')
+    // Safety net: turn path-like sources ("returns_refunds", "shipping/domestic") into readable words.
+    if (isSource) line = line.replace(/\b([a-z]+(?:[_/][a-z]+)+)\b/g, (m) => m.split(/[_/]/).map((w) => w[0].toUpperCase() + w.slice(1)).join(' '))
     const html = line
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-    const isList = /^\s*([-*]|\d+\.)\s+/.test(line)
+    const isList = /^\s*([-*•]|\d+\.)\s+/.test(line)
     return (
       <div
         key={i}
@@ -156,13 +161,13 @@ function MessageView({message}: {message: UIMessage}) {
   const text = textParts.map((p) => p.text).join('')
   return (
     <>
-      {!isUser &&
-        toolParts.map((p, i) => (
-          <div key={i} className="rez-tool">
-            {p.state && !p.state.startsWith('output') && <span className="rez-dot" />}
-            {toolLabel(p.toolName || p.type)}
-          </div>
-        ))}
+      {/* While REZ works, show only its current step. Once the answer arrives, the steps disappear. */}
+      {!isUser && !text && toolParts.length > 0 && (
+        <div className="rez-tool" key={toolParts.length}>
+          <span className="rez-dot" />
+          {toolLabel(toolParts[toolParts.length - 1].toolName || toolParts[toolParts.length - 1].type)}
+        </div>
+      )}
       {text && <div className={`rez-bubble ${isUser ? 'rez-user' : 'rez-bot'}`}>{isUser ? text : renderText(text)}</div>}
     </>
   )
